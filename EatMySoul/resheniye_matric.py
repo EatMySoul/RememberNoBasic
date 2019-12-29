@@ -1,15 +1,24 @@
 #Программа для решения матричных уравнений
-#Реализован метод крамера
+#Реализован метод крамера и гауса
+import random
+
+
 class matrix:
     
     def __init__(self,lines,column):
         self.lines = lines
         self.column = column
         self.mx = []
-        if lines == column:
-            self.deta = 1
-        else:
-            self.deta = 0
+        self.deta = 1
+            
+        
+    def method_gausa(self):
+        temp = matrix(self.lines,self.column)
+        temp.mx = self.mx
+        temp.make_treeangle()
+        temp.show_matrix()
+        temp.gaus()
+        
             
             
     def method_kramera(self):
@@ -17,20 +26,27 @@ class matrix:
         for k in range(self.column):
             temp = matrix(self.lines,self.column - 1)
             temp.input_matrix(self.mx,k)
+            temp.show_matrix()
             temp.make_treeangle()
+            print("Детерминант матрицы: = ","%.2f" % temp.deta,"\n\n")
             deta.append(temp.deta)
         for i in range(len(deta) - 1):
             try:
                 deta[i] = deta[i]/deta[self.column - 1]
             except(ZeroDivisionError):
-                print("Детерминант матрицы равен нулю:/")
+                print("Детерминант матрицы равен нулю")
+                break
             print("x",i + 1," = ",deta[i],sep = '')
             
-            
+          
+          
     def make_treeangle(self):
         for k in range(self.lines):
             for j in range(k+1,self.lines):
-                d = self.mx[j][k]/self.mx[k][k]
+                if self.mx[k][k] != 0:
+                    d = self.mx[j][k]/self.mx[k][k]
+                else:
+                    d = 0
                 for i in range(k,self.column):
                     self.mx[j][i] = self.mx[j][i] - d*self.mx[k][i]
                     
@@ -39,6 +55,9 @@ class matrix:
                 for j in range(self.column):
                     if i == j:
                         self.deta = self.deta*self.mx[i][j]
+                        
+                        
+            
             
             
     def transpon(self):
@@ -52,7 +71,7 @@ class matrix:
                         
     
             
-    def input_matrix(self , matrix = None , k = None):
+    def input_matrix(self , matrix = None , column = None , line = None):
         if matrix == None:
             check = False
             for i in range(self.lines):
@@ -62,7 +81,10 @@ class matrix:
                     check = False
                     while check == False:
                         try:
-                            print("a[",i + 1,"][",j + 1,"]= ",sep = '',end = '')
+                            if (j + 1) < self.column:
+                                print("x",j + 1,"*",sep = '',end = '')
+                            else:
+                                print("b",i+1," = ",sep = '',end = '')
                             input_int = int(input())
                             check = True
                         except(TypeError,ValueError):
@@ -73,15 +95,43 @@ class matrix:
                 self.mx.append([])
             for i in range(self.lines):
                 for j in range(self.column + 1):
-                    if j != k:
+                    if j != column and i != line:
                         self.mx[i].append(matrix[i][j])
+                        
+                        
+    def gaus(self):
+        x = []
+        if self.column > self.lines + 1:
+            print("Уравнение имеет бесконечное колличество решений")
+            for i in range(self.column):
+                x.append(1)
+            for i in range(self.lines + 1,self.column):
+                print("Переменная x",i," является базисной, Введите её значение: ",end = '', sep = '')
+                x[i - 1] = check_in()
+            for k in range(self.lines - 1,-1,-1):
+                d = 0
+                for j in range(k + 1,self.column - 1):
+                    d = d - self.mx[k][j]*x[j]
+                    x[k] = (d + self.mx[k][self.column - 1])/self.mx[k][k]
+            print("Возможное решение:")
+        else:
+            for i in range(self.column):
+                x.append(1)
+            for k in range(self.lines - 1,-1,-1):
+                d = 0
+                for j in range(k + 1,self.column - 1):
+                    d = d - self.mx[k][j]*x[j]
+                x[k] = (d + self.mx[k][self.column - 1])/self.mx[k][k]
+        for i in range(len(x) - 1):
+            print ("x",i + 1," = ", '%.1f' % x[i] , sep = '')
+        
                 
                 
                 
                 
     def show_matrix(self):
         if self.lines  < self.column:
-            print("+",(self.column - 1)*"-------+",".......\\",sep ='')
+            print("\n+",(self.column - 1)*"-------+",".......\\",sep ='')
         else:
             print("+",(self.column)*"-------+",sep ='')
         for i in range(self.lines):
@@ -89,15 +139,16 @@ class matrix:
                 print("|", '{:^6.1f}'.format(self.mx[i][j]),end = '')
             print("|\n",end = '')
         if self.lines  < self.column:
-            print("+",(self.column - 1)*"-------+","'''''''/",sep ='')
+            print("+",(self.column - 1)*"-------+","'''''''/","\n\n",sep ='')
         else:
-            print("+",(self.column)*"-------+",sep ='')
+            print("+",(self.column)*"-------+","\n\n",sep ='')
+            
+            
             
 def check_in():            
     check = False
     while check == False:
         try:
-            print("Колличество строк: ",sep = '',end = '')
             input_int = int(input())
             check = True
         except(TypeError,ValueError):
@@ -105,27 +156,33 @@ def check_in():
     return input_int
         
 
+
 def __main__():
-    dim = check_in()
-    matr = matrix(dim , dim + 1)
+    print("Колличество строк: ",sep = '',end = '')
+    lines = check_in()
+    column = 0
+    while lines  >= column:
+        print("Колличество переменных: ",sep = '', end = '')
+        column = check_in()
+    matr = matrix(lines , column + 1)
     print("Введи расширенную матрицу для её решения")
     matr.input_matrix()
     matr.show_matrix()
-    matr.method_kramera()
+    temp = matr
+    temp.make_treeangle()
+    if temp.deta != 0:
+        if lines + 1 == column:
+            print("Метод решения:\n[ 1 ]Метод гауса\n[ 2 ]Метод крамера\nВыбирай с умом: " , end = '')
+            chose = check_in()
+            if chose == 1:
+                matr.method_gausa()
+            else:
+                matr.method_kramera()    
+        else:
+            matr.method_gausa()
+    else:
+        print("У этой матрицы нет решений")
 __main__()
-#####DUBUG
-#matr = matrix(3,3)
-#matr.input_matrix()
-#matr.show_matrix()
-##matr.transpon()
-#matr.method_kramera()
-##matr.make_treeangle()
-#matr.show_matrix()
-##print("determinant = ","%.1f" % matr.deta)
-##4  5  6  7  3  
-##2  4  5  8  9  
-##0  2  1  1  3  
-##4  1  5  6  7  
-##8  3  4  3  4   896
+
 
     
