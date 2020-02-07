@@ -39,10 +39,16 @@ class matrix:
             self.deta = temp.deta
         for i in range(len(deta) - 1):
             try:
-                if i % 2 != 0:
-                    deta[i] = deta[i]/deta[self.column - 1]
+                if len(deta) % 2 == 0:
+                    if i % 2 == 0:
+                        deta[i] = deta[i]/deta[self.column - 1]
+                    else:
+                        deta[i] = -(deta[i]/deta[self.column - 1])
                 else:
-                    deta[i] = -(deta[i]/deta[self.column - 1])
+                    if i % 2 != 0:
+                        deta[i] = deta[i]/deta[self.column - 1]
+                    else:
+                        deta[i] = -(deta[i]/deta[self.column - 1])
             except(ZeroDivisionError):
                 print("\033[31m [!] \033[0m Детерминант матрицы равен нулю. Решений нет")
                 break
