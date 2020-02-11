@@ -40,10 +40,8 @@ def main():
         for i in range(num - 1 - k ,k , -1):
             a[i][i_min] = m
             m = m + 1
-    #print("\n+",num*"-------+" , sep = '')
     for i in range(num):
         for j in range(num):
             print ('{:^4.0f}'.format(a[i][j]),end = ' ')
-        print()
-        #print("|\n+",num*"-------+" , sep = '')
+        print("\n")
 main()
