@@ -9,7 +9,7 @@ class Player:
         iceCreamMagazine.pay(cash_to_pay)
 
     def get_damage(self, dmg):
-        self.healf -= dmg
+        self.healf += -dmg
 
     def attack(self):
         iceCreamMagazine.get_damage(self.dmg)
