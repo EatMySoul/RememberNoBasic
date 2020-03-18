@@ -10,8 +10,6 @@ class Game():
         self.player_choose('start')
         self.show_interface()
         self.start_listener()
-        self.iceCreamMagazine = Icecream()
-        player = Player()
 
 
     def player_choose(self,choose):
@@ -100,7 +98,13 @@ class Game():
         if self.gameplay_stage[0] == 'stage_name':
             player.get_damage(10)
 
+def main():
+    global iceCreamMagazine , player, session
 
-iceCreamMagazine = Icecream()
-player = Player()
-session = Game()
+    iceCreamMagazine = Icecream()
+    player = Player()
+    session = Game()
+
+
+if __name__ == "__main__":
+    main()
