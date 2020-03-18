@@ -2,7 +2,7 @@ class Icecream:
 
     def __init__(self):
         self.healf = 100
-        self.dmg = 1
+        self.dmg = 2
         self.patience = 10
         self.cash = 0
         self.display = """\
