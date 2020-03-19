@@ -7,7 +7,7 @@ def random_filling():
     for i in range(lines):
         for j in range(columns):
             if matrix[i][j] == 0:
-                matrix[i][j] = randint(1,999)
+                matrix[i][j] = randint(1,100)
 
 def matrix_delete_num():
     if len(str(matrix[position_y][position_x])) == 1:
@@ -37,7 +37,7 @@ def show_matrix():
             else:    
                 print('│{:^5.0f}'.format(matrix[i][j]),end = '')
         print('│')
-    print('  ','+─────'*columns, '+', sep='')
+        print('  ','+─────'*columns, '+', sep='')
 
 
 def start_listener():
