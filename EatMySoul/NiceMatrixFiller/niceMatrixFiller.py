@@ -26,6 +26,7 @@ def show_matrix():
     Use 'up','down','right','left' for moving
     Use 'ctrl' to random filling
     Use 'backspace' to delete num
+    Use 'tab' to delete line or column
     Press 'Enter' to stop
             """)
     print('  ','+─────'*columns, '+', sep='')
@@ -55,27 +56,45 @@ def on_press(key):
     if key == keyboard.Key.enter:
         show_matrix()
         return False
+
     elif key == keyboard.Key.backspace:
         matrix_delete_num()
+
     elif key == keyboard.Key.ctrl:
         random_filling()
+
+    elif key == keyboard.Key.tab:
+        if position_x + 1 == columns and columns > 2:
+            for i in range(lines):
+                matrix[i].pop()
+            position_x -= 1
+            columns -= 1
+        if position_y + 1 == lines and lines > 2:
+            matrix.pop()
+            position_y -= 1
+            lines -= 1
+
     elif key == keyboard.Key.right:
         if (position_x + 1) == columns:
             for i in range(lines):
                 matrix[i].append(0)
             columns += 1
         position_x += 1
+
     elif key == keyboard.Key.left:
         if position_x > 0:
             position_x -= 1
+
     elif key == keyboard.Key.down:
         if (position_y + 1) == lines:
             matrix.append([0]*columns)
             lines += 1
         position_y += 1
+
     elif key == keyboard.Key.up:
         if position_y > 0:
             position_y -= 1
+
     else:
         try:
             matrix_input(int(key.char))
