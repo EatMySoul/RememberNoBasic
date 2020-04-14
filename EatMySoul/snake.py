@@ -3,7 +3,7 @@ from random import randint
 import os
 
 MAP_SIZE = 40
-GAME_SPEED = 50
+GAME_SPEED = 70
 
 class Game():
 
@@ -21,16 +21,18 @@ class Game():
     def show_map(self):
         self.map = [[' '] * MAP_SIZE for i in range(MAP_SIZE)]
         self.map[self.food_pos_x][self.food_pos_y] = '*'
-        for i in range(len(self.snake.body)):
-            j = 0
-            if self.map[self.snake.body[i][j]][self.snake.body[i][j + 1]] == '*':
+        for i in range(len(self.snake.body)): 
+            if self.map[self.snake.body[i][0]][self.snake.body[i][1]] == '*':
                 self.snake.add_segment()
                 self.add_food()
-            self.map[self.snake.body[i][j]][self.snake.body[i][j + 1]] = '#'
+            self.map[self.snake.body[i][0]][self.snake.body[i][1]] = '#'
+        print(' ','__'*MAP_SIZE,sep='')
         for i in range(MAP_SIZE):
+            print('|',end = '')
             for j in range(MAP_SIZE):
                 print(self.map[i][j],'',end='')
-            print()
+            print('|')
+        print(' ','--'*MAP_SIZE,sep='')
         print(self.snake.score)
 
 
