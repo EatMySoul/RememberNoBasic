@@ -1,50 +1,64 @@
 from pynput import keyboard
+from random import randint
 import os
 
-MAP_SIZE = 10
+MAP_SIZE = 40
+GAME_SPEED = 50
 
 class Game():
 
     def __init__(self):
+        self.tick_time = GAME_SPEED / 1000
         self.snake = Snake()
-        with keyboard.Listener(on_press=self.on_press) as listener:
-            listener.join()
-            for i in range(15):
-                self.tick()
+        self.add_food()
+        while self.snake.living == True: 
+            self.tick()
+        #os.system('clear')
+        print(f'Score: {self.snake.score}')
 
        
 
     def show_map(self):
         self.map = [[' '] * MAP_SIZE for i in range(MAP_SIZE)]
+        self.map[self.food_pos_x][self.food_pos_y] = '*'
         for i in range(len(self.snake.body)):
             j = 0
+            if self.map[self.snake.body[i][j]][self.snake.body[i][j + 1]] == '*':
+                self.snake.add_segment()
+                self.add_food()
             self.map[self.snake.body[i][j]][self.snake.body[i][j + 1]] = '#'
         for i in range(MAP_SIZE):
             for j in range(MAP_SIZE):
                 print(self.map[i][j],'',end='')
             print()
-
-    def on_press(self,key):
-        if key == keyboard.Key.left and self.snake.direction != 'right':
-            self.snake.direction = 'left'
-        elif key == keyboard.Key.right and self.snake.direction != 'left':
-            self.snake.direction = 'right'
-        elif key == keyboard.Key.up and self.snake.direction != 'down':
-            self.snake.direction = 'up'
-        elif key == keyboard.Key.down and self.snake.direction != 'up':
-            self.snake.direction = 'down'
-        elif key == keyboard.Key.esc:
-            exit()
+        print(self.snake.score)
 
 
+    def add_food(self):
+        x = randint(0,MAP_SIZE - 1)
+        y = randint(0,MAP_SIZE - 1)
+        for i in range(len(self.snake.body)):
+            while x == self.snake.body[i][0]:
+                x = randint(0,MAP_SIZE - 1)
+            while y == self.snake.body[i][1]:
+                y = randint(0,MAP_SIZE - 1)
+        self.food_pos_x = x
+        self.food_pos_y = y
+                
+
+        
+    
     def tick(self):
+        os.system('clear')
         self.snake.move()
         self.show_map()
-        os.system('sleep .3')
+        os.system(f'sleep {self.tick_time}')
 
 class Snake():
 
     def __init__(self):
+        self.living = True
+        self.score = 0
         self.body = [[0]*2 for i in range(3)]
         self.body[0][0] = 3
         self.body[0][1] = 3
@@ -53,6 +67,10 @@ class Snake():
         self.body[2][0] = 3
         self.body[2][1] = 1
         self.direction = 'up'
+        listener = keyboard.Listener(on_press=self.on_press)
+        listener.start()
+        
+        
         
     def move(self):
 
@@ -82,15 +100,31 @@ class Snake():
                 self.body[0][0] = 0
             else:
                 self.body[0][0] += 1
+        for i in range(1,len(self.body)):
+            if self.body[0] == self.body[i]:
+                self.death()
 
-        
+    def on_press(self,key):
+        if key == keyboard.Key.left and self.direction != 'right':
+            self.direction = 'left'
+        elif key == keyboard.Key.right and self.direction != 'left':
+            self.direction = 'right'
+        elif key == keyboard.Key.up and self.direction != 'down':
+            self.direction = 'up'
+        elif key == keyboard.Key.down and self.direction != 'up':
+            self.direction = 'down'
+        elif key == keyboard.Key.esc:
+            self.living = False
 
-    def add_segment():
+    
+
+    def add_segment(self):
+        self.score += 10
+        self.body.append([0,0])
         pass
 
-    def death():
-        pass
-
+    def death(self):
+        self.living = False
        
 def main():
     game = Game()
